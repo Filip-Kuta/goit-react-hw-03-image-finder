@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ImageSearch from './ImageSearch';
-import { BeatLoader } from 'react-spinners';
+import { Oval } from 'react-loader-spinner';
 
 function App() {
   const [images, setImages] = useState([]);
@@ -89,7 +89,7 @@ function App() {
       <div className="image-gallery">
         {loading ? (
           <div className="loader">
-            <BeatLoader color={'#36D7B7'} loading={loading} size={15} />
+            <Oval color="#00BFFF" height={80} width={80} />
           </div>
         ) : (
           images.map((image) => (
@@ -106,17 +106,7 @@ function App() {
 
       {selectedImage && (
         <div className="modal" onClick={handleCloseModal}>
-          <div className="modal-content">
-            <span className="modal-close" onClick={handleCloseModal}>
-              &#x2715;
-            </span>
-            <img
-              src={selectedImage.largeImageURL}
-              alt={selectedImage.tags}
-              className="modal-image"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
+          {}
         </div>
       )}
 

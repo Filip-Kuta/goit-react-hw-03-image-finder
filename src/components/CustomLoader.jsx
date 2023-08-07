@@ -1,12 +1,19 @@
 import React from 'react';
-import { BeatLoader } from 'react-spinners';
+import { Oval } from 'react-loader-spinner';
+import './Loader.css';
 
-const CustomLoader = ({ loading }) => {
+export default function CustomLoader() {
   return (
     <div className="loader-container">
-      <BeatLoader color="#00BFFF" loading={loading} size={15} />
+      <Oval
+        ariaLabel="loading-indicator"
+        height={100}
+        width={100}
+        strokeWidth={5}
+        strokeWidthSecondary={1}
+        color="blue"
+        secondaryColor="white"
+      />
     </div>
   );
-};
-
-export default CustomLoader;
+}
