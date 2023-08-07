@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ImageSearch from './ImageSearch';
-import { Oval } from 'react-loader-spinner';
 
 function App() {
   const [images, setImages] = useState([]);
@@ -82,31 +81,39 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="App">
       <h1>Image Gallery</h1>
       <ImageSearch onSearch={handleSearchImages} />
       <div className="image-gallery">
-        {loading ? (
-          <div className="loader">
-            <Oval color="#00BFFF" height={80} width={80} />
-          </div>
-        ) : (
-          images.map((image) => (
-            <img
-              key={image.id}
-              src={image.webformatURL}
-              alt={image.tags}
-              className="gallery-image"
-              onClick={() => handleImageClick(image)}
-            />
-          ))
-        )}
+        {images.map((image) => (
+          <img
+            key={image.id}
+            src={image.webformatURL}
+            alt={image.tags}
+            className="gallery-image"
+            onClick={() => handleImageClick(image)}
+          />
+        ))}
       </div>
 
       {selectedImage && (
         <div className="modal" onClick={handleCloseModal}>
-          {}
+          <div className="modal-content">
+            <span className="modal-close" onClick={handleCloseModal}>
+              &#x2715;
+            </span>
+            <img
+              src={selectedImage.largeImageURL}
+              alt={selectedImage.tags}
+              className="modal-image"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       )}
 
