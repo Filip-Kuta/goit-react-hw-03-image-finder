@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import ImageSearch from './ImageSearch';
+import ImageGallery from 'components/ImageGallery/ImageGallery';
+import Button from 'components/Button/Button';
+import Modal from 'components/Modal/Modal';
+import Searchbar from 'components/Searchbar/Searchbar';
 
 function App() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [searched, setSearched] = useState(false);
 
   const getImages = async (inputValue, page) => {
     const url = 'https://pixabay.com/api/';
@@ -25,22 +29,23 @@ function App() {
     }
   };
 
+  const handleSearchImages = async (searchTerm) => {
+    try {
+      const response = await getImages(searchTerm, 1);
+      setImages(response.hits);
+      setCurrentPage(1);
+      setSearched(true);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
+
   const handleImageClick = (image) => {
     setSelectedImage(image);
   };
 
   const handleCloseModal = () => {
     setSelectedImage(null);
-  };
-
-  const handleSearchImages = async (searchTerm) => {
-    try {
-      const response = await getImages(searchTerm, 1);
-      setImages(response.hits);
-      setCurrentPage(1);
-    } catch (error) {
-      console.error('Error fetching images:', error);
-    }
   };
 
   const handleLoadMore = async () => {
@@ -54,12 +59,6 @@ function App() {
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      handleCloseModal();
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,56 +69,46 @@ function App() {
         console.error('Error fetching images:', error);
       }
     };
-  
+
     fetchData();
-  
-    window.addEventListener('keydown', handleKeyDown);
-  
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  const handleKeyDown = (event) => {
+    if (event.key === 'Escape') {
+      handleCloseModal();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="App">
       <h1>Image Gallery</h1>
-      <ImageSearch onSearch={handleSearchImages} />
-      <div className="image-gallery">
-        {images.map((image) => (
-          <img
-            key={image.id}
-            src={image.webformatURL}
-            alt={image.tags}
-            className="gallery-image"
-            onClick={() => handleImageClick(image)}
-          />
-        ))}
-      </div>
+      <Searchbar onSearch={handleSearchImages} />
 
-      {selectedImage && (
-        <div className="modal" onClick={handleCloseModal}>
-          <div className="modal-content">
-            <span className="modal-close" onClick={handleCloseModal}>
-              &#x2715;
-            </span>
-            <img
-              src={selectedImage.largeImageURL}
-              alt={selectedImage.tags}
-              className="modal-image"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
-        </div>
+      {!searched ? (
+        <p></p>
+      ) : loading ? (
+        <p>Loading...</p>
+      ) : images.length > 0 ? (
+        <ImageGallery images={images} onImageClick={handleImageClick} />
+      ) : (
+        <p>No images to display.</p>
       )}
 
-      <button onClick={handleLoadMore} className="load-more-button">
-        Load More
-      </button>
+      {selectedImage && (
+        <Modal selectedImage={selectedImage} onClose={handleCloseModal} />
+      )}
+
+      <Button onClick={handleLoadMore}>Load More</Button>
     </div>
   );
 }
