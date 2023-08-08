@@ -99,7 +99,10 @@ function App() {
       ) : loading ? (
         <p>Loading...</p>
       ) : images.length > 0 ? (
-        <ImageGallery images={images} onImageClick={handleImageClick} />
+        <>
+          <ImageGallery images={images} onImageClick={handleImageClick} />
+          <Button onClick={handleLoadMore}>Load More</Button>
+        </>
       ) : (
         <p>No images to display.</p>
       )}
@@ -107,8 +110,6 @@ function App() {
       {selectedImage && (
         <Modal selectedImage={selectedImage} onClose={handleCloseModal} />
       )}
-
-      <Button onClick={handleLoadMore}>Load More</Button>
     </div>
   );
 }
