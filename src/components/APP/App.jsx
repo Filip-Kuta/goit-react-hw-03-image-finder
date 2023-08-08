@@ -92,7 +92,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, );
 
   return (
     <div className="App">
