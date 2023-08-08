@@ -4,6 +4,7 @@ import ImageGallery from 'components/ImageGallery/ImageGallery';
 import Button from 'components/Button/Button';
 import Modal from 'components/Modal/Modal';
 import Searchbar from 'components/Searchbar/Searchbar';
+import Loader from 'components/Loader/Loader';
 
 function App() {
   const [images, setImages] = useState([]);
@@ -11,6 +12,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
   const [searched, setSearched] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false); // Nowy stan do obsługi ładowania kolejnych obrazków
 
   const getImages = async (inputValue, page) => {
     const url = 'https://pixabay.com/api/';
@@ -50,12 +52,15 @@ function App() {
 
   const handleLoadMore = async () => {
     const nextPage = currentPage + 1;
+    setLoadingMore(true); // Rozpoczęcie ładowania
     try {
       const response = await getImages('', nextPage);
       setImages((prevImages) => [...prevImages, ...response.hits]);
       setCurrentPage(nextPage);
     } catch (error) {
       console.error('Error fetching images:', error);
+    } finally {
+      setLoadingMore(false); // Zakończenie ładowania
     }
   };
 
@@ -97,11 +102,15 @@ function App() {
       {!searched ? (
         <p></p>
       ) : loading ? (
-        <p>Loading...</p>
+        <Loader />
       ) : images.length > 0 ? (
         <>
           <ImageGallery images={images} onImageClick={handleImageClick} />
-          <Button onClick={handleLoadMore}>Load More</Button>
+          {loadingMore ? (
+            <Loader />
+          ) : (
+            <Button onClick={handleLoadMore}>Load More</Button>
+          )}
         </>
       ) : (
         <p>No images to display.</p>
