@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import ImageGallery from 'components/ImageGallery/ImageGallery';
@@ -83,7 +82,6 @@ function App() {
     };
 
     fetchData();
-
   }, []);
 
   useEffect(() => {
@@ -92,6 +90,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
